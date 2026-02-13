@@ -9,10 +9,9 @@ import java.util.Scanner;
 
 public class GodChaos {
 
-    // HARDCODED CREDENTIALS (O primeiro pecado capital)
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres"; // Mude o nome do banco se precisar
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
-    private static final String PASS = "admin"; // Coloque sua senha aqui
+    private static final String PASS = "admin";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -28,15 +27,11 @@ public class GodChaos {
 
             if (opcao == 0) break;
 
-            Connection conn = null; // Gestão manual de conexão
+            Connection conn = null;
 
             try {
-                // Abrindo conexão direta na Main (Acoplamento forte)
                 conn = DriverManager.getConnection(URL, USER, PASS);
 
-                // ---------------------------------------------------------
-                // 1. CRIAR CONTA
-                // ---------------------------------------------------------
                 if (opcao == 1) {
                     System.out.print("ID da Conta: ");
                     int id = scanner.nextInt();
@@ -53,9 +48,6 @@ public class GodChaos {
                     System.out.println("Conta salva no banco!");
                 }
 
-                // ---------------------------------------------------------
-                // 2. REALIZAR TRANSAÇÃO (Onde o filho chora e a mãe não vê)
-                // ---------------------------------------------------------
                 else if (opcao == 2) {
                     System.out.print("ID Remetente: ");
                     int idRem = scanner.nextInt();
@@ -64,7 +56,6 @@ public class GodChaos {
                     System.out.print("Valor: ");
                     float valor = scanner.nextFloat();
 
-                    // Passo 1: Buscar saldo do remetente (SELECT)
                     String sqlBusca = "SELECT balance FROM accounts WHERE id = ?";
                     PreparedStatement stmtBusca = conn.prepareStatement(sqlBusca);
                     stmtBusca.setInt(1, idRem);
@@ -80,7 +71,6 @@ public class GodChaos {
                     rs.close();
                     stmtBusca.close();
 
-                    // Passo 2: Escolher tipo e calcular taxa (Strategy Hardcoded)
                     System.out.println("Tipo: [1] PIX, [2] TED, [3] CARTAO");
                     int tipo = scanner.nextInt();
                     float taxa = 0;
@@ -99,12 +89,8 @@ public class GodChaos {
 
                     float totalDebitar = valor + taxa;
 
-                    // Passo 3: Validar e Atualizar (A Lógica "Transaction Script")
                     if (saldoAtual >= totalDebitar) {
-                        // Perigo: Estamos fazendo updates separados sem Transaction Control explícito aqui
-                        // Se cair a luz entre um update e outro, o dinheiro some!
 
-                        // Debita do Remetente
                         String sqlUpdateRem = "UPDATE accounts SET balance = balance - ? WHERE id = ?";
                         PreparedStatement stmtRem = conn.prepareStatement(sqlUpdateRem);
                         stmtRem.setFloat(1, totalDebitar);
@@ -112,7 +98,6 @@ public class GodChaos {
                         stmtRem.executeUpdate();
                         stmtRem.close();
 
-                        // Credita no Destinatário
                         String sqlUpdateDest = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
                         PreparedStatement stmtDest = conn.prepareStatement(sqlUpdateDest);
                         stmtDest.setFloat(1, valor); // Destinatário recebe o valor limpo, sem taxa
@@ -120,7 +105,6 @@ public class GodChaos {
                         stmtDest.executeUpdate();
                         stmtDest.close();
 
-                        // Salva Histórico
                         String sqlLog = "INSERT INTO transactions (sender_id, receiver_id, amount, type) VALUES (?, ?, ?, ?)";
                         PreparedStatement stmtLog = conn.prepareStatement(sqlLog);
                         stmtLog.setInt(1, idRem);
@@ -136,9 +120,6 @@ public class GodChaos {
                     }
                 }
 
-                // ---------------------------------------------------------
-                // 3. VISUALIZAR
-                // ---------------------------------------------------------
                 else if (opcao == 3) {
                     System.out.print("ID da Conta: ");
                     int id = scanner.nextInt();
@@ -160,10 +141,9 @@ public class GodChaos {
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace(); // Log de erro pobre
+                e.printStackTrace();
                 System.out.println("ERRO DE SQL: " + e.getMessage());
             } finally {
-                // Fechamento manual e perigoso
                 try {
                     if (conn != null) conn.close();
                 } catch (SQLException e) {
