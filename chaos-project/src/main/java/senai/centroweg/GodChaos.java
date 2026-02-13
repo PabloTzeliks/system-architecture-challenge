@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class GodChaos {
 
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PASS = "admin";
+    private static final String USER = "root";
+    private static final String PASS = "root";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
