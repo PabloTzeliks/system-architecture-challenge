@@ -1,10 +1,14 @@
 package senai.centroweg;
 
+import senai.centroweg.model.Account;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class GodChaos {
@@ -43,12 +47,27 @@ public class GodChaos {
                     stmt.setInt(1, id);
                     stmt.setFloat(2, saldo);
                     stmt.executeUpdate();
-                    stmt.close(); // Se esquecer isso, vaza memória
+                    stmt.close();
 
                     System.out.println("Conta salva no banco!");
                 }
 
                 else if (opcao == 2) {
+
+                    List<Account> accountList = new ArrayList<>();
+
+                    String sqlUpdateRem = "SELECT * FROM accounts";
+                    PreparedStatement stmtRem = conn.prepareStatement(sqlUpdateRem);
+                    ResultSet rs = stmtRem.executeQuery();
+
+                    while (rs.next()) {
+                       accountList.add(new Account(rs.getInt(1),rs.getFloat(2)));
+                    }
+                    for(Account a : accountList) {
+                        System.out.println(a.toString());
+                    }
+                    stmtRem.close();
+
                     System.out.print("ID Remetente: ");
                     int idRem = scanner.nextInt();
                     System.out.print("ID Destinatário: ");
@@ -59,7 +78,7 @@ public class GodChaos {
                     String sqlBusca = "SELECT balance FROM accounts WHERE id = ?";
                     PreparedStatement stmtBusca = conn.prepareStatement(sqlBusca);
                     stmtBusca.setInt(1, idRem);
-                    ResultSet rs = stmtBusca.executeQuery();
+                    rs = stmtBusca.executeQuery();
 
                     float saldoAtual = 0;
                     if (rs.next()) {
@@ -81,18 +100,18 @@ public class GodChaos {
                         taxa = 0;
                     } else if (tipo == 2) {
                         tipoStr = "TED";
-                        taxa = 5.0f; // Taxa fixa
+                        taxa = 5.0f;
                     } else if (tipo == 3) {
                         tipoStr = "CARTAO";
-                        taxa = valor * 0.03f; // 3%
+                        taxa = valor * 0.03f;
                     }
 
                     float totalDebitar = valor + taxa;
 
                     if (saldoAtual >= totalDebitar) {
 
-                        String sqlUpdateRem = "UPDATE accounts SET balance = balance - ? WHERE id = ?";
-                        PreparedStatement stmtRem = conn.prepareStatement(sqlUpdateRem);
+                        sqlUpdateRem = "UPDATE accounts SET balance = balance - ? WHERE id = ?";
+                        stmtRem = conn.prepareStatement(sqlUpdateRem);
                         stmtRem.setFloat(1, totalDebitar);
                         stmtRem.setInt(2, idRem);
                         stmtRem.executeUpdate();
@@ -100,7 +119,7 @@ public class GodChaos {
 
                         String sqlUpdateDest = "UPDATE accounts SET balance = balance + ? WHERE id = ?";
                         PreparedStatement stmtDest = conn.prepareStatement(sqlUpdateDest);
-                        stmtDest.setFloat(1, valor); // Destinatário recebe o valor limpo, sem taxa
+                        stmtDest.setFloat(1, valor);
                         stmtDest.setInt(2, idDest);
                         stmtDest.executeUpdate();
                         stmtDest.close();
