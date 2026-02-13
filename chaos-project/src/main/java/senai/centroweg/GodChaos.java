@@ -21,10 +21,10 @@ public class GodChaos {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n=== SISTEMA CAOS (POSTGRES VERSION) ===");
-            System.out.println("1. Criar Conta (INSERT)");
-            System.out.println("2. Realizar Transação (SELECT + UPDATE + INSERT)");
-            System.out.println("3. Ver Saldo (SELECT)");
+            System.out.println("\n=== SISTEMA CAOS ===");
+            System.out.println("1. Criar Conta");
+            System.out.println("2. Realizar Transação");
+            System.out.println("3. Ver Saldo");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             int opcao = scanner.nextInt();
