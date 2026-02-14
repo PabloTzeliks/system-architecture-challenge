@@ -26,7 +26,7 @@ public class Account {
         this.createdAt = createdAt;
     }
 
-    public void credit(BigDecimal amount) {
+    public void deposit(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new DomainException("Valor de crédito deve ser positivo");
         }
@@ -34,7 +34,7 @@ public class Account {
         this.balance = this.balance.add(amount);
     }
 
-    public void debit(BigDecimal amount) {
+    public void withdraw(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new DomainException("Valor de débito deve ser positivo");
         }
