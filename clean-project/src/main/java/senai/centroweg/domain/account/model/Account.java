@@ -2,6 +2,7 @@ package senai.centroweg.domain.account.model;
 
 import lombok.Data;
 import senai.centroweg.domain.account.exception.DomainException;
+import senai.centroweg.domain.account.exception.InsufficientFundsException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -40,7 +41,7 @@ public class Account {
         }
 
         if (this.balance.compareTo(amount) < 0) {
-            throw new DomainException("Saldo insuficiente");
+            throw new InsufficientFundsException("Saldo insuficiente");
         }
 
         this.balance = this.balance.subtract(amount);
