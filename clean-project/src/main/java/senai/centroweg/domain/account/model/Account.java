@@ -1,6 +1,7 @@
 package senai.centroweg.domain.account.model;
 
 import lombok.Data;
+import lombok.Getter;
 import senai.centroweg.domain.account.exception.DomainException;
 import senai.centroweg.domain.account.exception.InsufficientFundsException;
 
@@ -9,29 +10,28 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
 public class Account {
 
     private final UUID id;
     private BigDecimal currentBalance;
     private final Instant createdAt;
 
-    public Account(UUID id, BigDecimal currentBalance, Instant createdAt) {
+    public Account(UUID id, Instant createdAt) {
         this.id = id;
-        this.currentBalance = currentBalance;
         this.createdAt = createdAt;
+        this.currentBalance = BigDecimal.ZERO;
     }
 
-    public Account(BigDecimal currentBalance, Instant createdAt) {
+    public Account(Instant createdAt) {
         this.id = UUID.randomUUID();
-        this.currentBalance = currentBalance;
+        this.currentBalance = BigDecimal.ZERO;
         this.createdAt = createdAt;
     }
 
-    public BigDecimal calculateCurrentBalance(List<BigDecimal> amounts) {
+    public void calculateCurrentBalance(List<BigDecimal> amounts) {
 
-        return amounts
-                .stream()
+        this.currentBalance = amounts.stream()
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
