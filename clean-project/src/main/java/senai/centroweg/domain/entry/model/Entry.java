@@ -31,7 +31,7 @@ public class Entry {
         this.creationDate = Instant.now();
     }
 
-    public Entry createDebit(BigDecimal amount, Transaction transaction) {
+    public static Entry createDebit(BigDecimal amount, Transaction transaction) {
         return new Entry(
                 transaction.getSenderAccountId(),
                 transaction.getId(),
@@ -40,7 +40,7 @@ public class Entry {
         );
     }
 
-    public Entry createCredit(BigDecimal amount, Transaction transaction) {
+    public static Entry createCredit(BigDecimal amount, Transaction transaction) {
         return new Entry(
                 transaction.getReceiverAccountId(),
                 transaction.getId(),
