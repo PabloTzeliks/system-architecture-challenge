@@ -1,6 +1,5 @@
 package senai.centroweg.domain.account.model;
 
-import lombok.Data;
 import lombok.Getter;
 import senai.centroweg.domain.account.exception.DomainException;
 import senai.centroweg.domain.account.exception.InsufficientFundsException;
