@@ -33,7 +33,6 @@ public class Entry {
     }
 
     public Entry createDebit(BigDecimal amount, Transaction transaction) {
-
         return new Entry(
                 transaction.getSenderAccountId(),
                 transaction.getId(),
@@ -41,4 +40,15 @@ public class Entry {
                 Instant.now()
         );
     }
+
+    public Entry createCredit(BigDecimal amount, Transaction transaction) {
+        return new Entry(
+                transaction.getReceiverAccountId(),
+                transaction.getId(),
+                amount,
+                Instant.now()
+        );
+    }
+
+
 }
