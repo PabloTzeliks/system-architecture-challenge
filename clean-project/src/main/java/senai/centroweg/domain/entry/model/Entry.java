@@ -1,14 +1,13 @@
 package senai.centroweg.domain.entry.model;
 
-import lombok.Data;
-import senai.centroweg.domain.account.model.Account;
+import lombok.Getter;
 import senai.centroweg.domain.transaction.model.Transaction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-@Data
+@Getter
 public class Entry {
     private final UUID id;
     private final UUID accountId;
@@ -29,7 +28,7 @@ public class Entry {
         this.accountId = accountId;
         this.transactionId = transactionId;
         this.amount = amount;
-        this.creationDate = creationDate;
+        this.creationDate = Instant.now();
     }
 
     public Entry createDebit(BigDecimal amount, Transaction transaction) {
@@ -49,6 +48,4 @@ public class Entry {
                 Instant.now()
         );
     }
-
-
 }
