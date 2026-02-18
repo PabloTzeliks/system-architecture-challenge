@@ -13,19 +13,22 @@ import java.util.UUID;
 public class Account {
 
     private final UUID id;
+    private final UUID userId;
     private BigDecimal currentBalance;
     private final Instant createdAt;
 
-    public Account(UUID id, Instant createdAt) {
+    public Account(UUID id, UUID userId, Instant createdAt) {
         this.id = id;
+        this.userId = userId;
         this.createdAt = createdAt;
         this.currentBalance = BigDecimal.ZERO;
     }
 
-    public Account(Instant createdAt) {
+    public Account(UUID userId) {
         this.id = UUID.randomUUID();
+        this.userId = userId;
         this.currentBalance = BigDecimal.ZERO;
-        this.createdAt = createdAt;
+        this.createdAt = Instant.now();
     }
 
     public void calculateCurrentBalance(List<BigDecimal> amounts) {
