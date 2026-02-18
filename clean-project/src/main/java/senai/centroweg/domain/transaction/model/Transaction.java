@@ -2,6 +2,7 @@ package senai.centroweg.domain.transaction.model;
 
 import lombok.Data;
 import senai.centroweg.domain.entry.model.Entry;
+import senai.centroweg.domain.transaction.exception.InvalidTaxException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -52,7 +53,7 @@ public class Transaction {
 
     public void applyFee(BigDecimal feeValue) {
         if (feeValue.compareTo(BigDecimal.ZERO) < 0) {
-            throw new TransactionDomainException("Taxa não pode ser negativa");
+            throw new InvalidTaxException("Taxa não pode ser negativa");
         }
 
         this.feeAmount = feeValue;
