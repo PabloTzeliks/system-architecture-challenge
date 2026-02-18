@@ -16,14 +16,17 @@ public class Transaction {
     private final UUID senderAccountId;
     private final UUID receiverAccountId;
     private final BigDecimal rawAmount;
+    private BigDecimal feeAmount;
     private BigDecimal totalAmount;
     private final TransactionType type;
     private final Instant createdAt;
     private Instant confirmationAt;
 
-    public Transaction(UUID id, UUID senderAccountId,
+    public Transaction(UUID id,
+                       UUID senderAccountId,
                        UUID receiverAccountId,
                        BigDecimal rawAmount,
+                       BigDecimal feeAmount,
                        BigDecimal totalAmount,
                        TransactionType type,
                        Instant createdAt,
@@ -32,6 +35,7 @@ public class Transaction {
         this.senderAccountId = senderAccountId;
         this.receiverAccountId = receiverAccountId;
         this.rawAmount = rawAmount;
+        this.feeAmount = feeAmount;
         this.totalAmount = totalAmount;
         this.type = type;
         this.createdAt = createdAt;
@@ -47,6 +51,7 @@ public class Transaction {
         this.senderAccountId = senderAccountId;
         this.receiverAccountId = receiverAccountId;
         this.rawAmount = rawAmount;
+        this.feeAmount = BigDecimal.ZERO;
         this.type = type;
         this.createdAt = Instant.now();
     }
@@ -74,4 +79,6 @@ public class Transaction {
 
         return List.of(debit, credit);
     }
+
+
 }
