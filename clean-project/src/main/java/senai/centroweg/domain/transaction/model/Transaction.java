@@ -3,6 +3,8 @@ package senai.centroweg.domain.transaction.model;
 import lombok.Data;
 import senai.centroweg.domain.entry.model.Entry;
 import senai.centroweg.domain.transaction.exception.InvalidTaxException;
+import senai.centroweg.domain.transaction.exception.InvalidTransactionStateException;
+import senai.centroweg.domain.transaction.strategy.FeeCalculationStrategy;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -22,7 +24,7 @@ public class Transaction {
     private final Instant createdAt;
     private Instant confirmationAt;
 
-    public Transaction(UUID id,
+    private Transaction(UUID id,
                        UUID senderAccountId,
                        UUID receiverAccountId,
                        BigDecimal rawAmount,
@@ -42,27 +44,48 @@ public class Transaction {
         this.confirmationAt = confirmationAt;
     }
 
-    public Transaction(UUID senderAccountId,
-                       UUID receiverAccountId,
-                       BigDecimal rawAmount,
-                       TransactionType type) {
+    public static Transaction create(UUID senderAccountId,
+                                     UUID receiverAccountId,
+                                     BigDecimal amount,
+                                     TransactionType type,
+                                     FeeCalculationStrategy feeStrategy) {
 
-        this.id = UUID.randomUUID();
-        this.senderAccountId = senderAccountId;
-        this.receiverAccountId = receiverAccountId;
-        this.rawAmount = rawAmount;
-        this.feeAmount = BigDecimal.ZERO;
-        this.type = type;
-        this.createdAt = Instant.now();
+        BigDecimal calculatedFee = feeStrategy.calculate(amount, type);
+        validateFeeValue(calculatedFee);
+
+        BigDecimal finalTotal = amount.add(calculatedFee);
+
+        return new Transaction(
+                UUID.randomUUID(),
+                senderAccountId,
+                receiverAccountId,
+                amount,
+                calculatedFee,
+                finalTotal,
+                type,
+                Instant.now(),
+                null
+        );
     }
 
-    public void applyFee(BigDecimal feeValue) {
-        if (feeValue.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidTaxException("Taxa não pode ser negativa");
+    private static void validateFeeValue(BigDecimal fee) {
+        if (fee == null || fee.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidTaxException("A taxa calculada não pode ser negativa.");
+        }
+    }
+
+    public void confirm() {
+
+        if (isConfirmed()) {
+            throw new InvalidTransactionStateException("Transação já foi confirmada anteriormente.");
         }
 
-        this.feeAmount = feeValue;
-        this.totalAmount = this.rawAmount.add(this.feeAmount);
+        this.confirmationAt = Instant.now();
+    }
+
+    public boolean isConfirmed() {
+
+        return this.confirmationAt != null;
     }
 
     public List<Entry> generateEntries() {
@@ -79,6 +102,4 @@ public class Transaction {
 
         return List.of(debit, credit);
     }
-
-
 }
