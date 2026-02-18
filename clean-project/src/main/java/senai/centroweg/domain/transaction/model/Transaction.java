@@ -1,6 +1,6 @@
 package senai.centroweg.domain.transaction.model;
 
-import lombok.Data;
+import lombok.Getter;
 import senai.centroweg.domain.entry.model.Entry;
 import senai.centroweg.domain.transaction.exception.InvalidTaxException;
 import senai.centroweg.domain.transaction.exception.InvalidTransactionStateException;
@@ -11,15 +11,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
 public class Transaction {
 
     private final UUID id;
     private final UUID senderAccountId;
     private final UUID receiverAccountId;
     private final BigDecimal rawAmount;
-    private BigDecimal feeAmount;
-    private BigDecimal totalAmount;
+    private final BigDecimal feeAmount;
+    private final BigDecimal totalAmount;
     private final TransactionType type;
     private final Instant createdAt;
     private Instant confirmationAt;
