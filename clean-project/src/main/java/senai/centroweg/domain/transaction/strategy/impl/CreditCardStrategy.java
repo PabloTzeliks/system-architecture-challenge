@@ -10,7 +10,7 @@ public class CreditCardStrategy implements FeeCalculationStrategy {
     @Override
     public BigDecimal calculate(BigDecimal amount, TransactionType type) {
 
-        BigDecimal percentage = BigDecimal.valueOf(TransactionType..getTax());
+        BigDecimal percentage = BigDecimal.valueOf(TransactionType.CREDIT_CARD.getTax());
         return amount.multiply(percentage);
     }
 }
