@@ -56,6 +56,8 @@ public class TransferFundsUseCase {
         List<Entry> entries = transaction.generateEntries();
 
         transactionManager.execute(() -> {
+            transaction.confirm();
+
             transactionRepository.save(transaction);
             entryRepository.saveAll(entries);
         });

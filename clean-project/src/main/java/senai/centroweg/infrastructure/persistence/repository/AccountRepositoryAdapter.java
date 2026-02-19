@@ -2,7 +2,6 @@ package senai.centroweg.infrastructure.persistence.repository;
 
 import senai.centroweg.domain.account.model.Account;
 import senai.centroweg.domain.account.ports.AccountRepositoryPort;
-import senai.centroweg.domain.user.model.User;
 import senai.centroweg.infrastructure.persistence.database.QueryExecutor;
 
 import java.sql.ResultSet;

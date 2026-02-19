@@ -3,10 +3,9 @@ package senai.centroweg.infrastructure.persistence.repository;
 import senai.centroweg.domain.transaction.model.Transaction;
 import senai.centroweg.domain.transaction.ports.TransactionRepositoryPort;
 import senai.centroweg.infrastructure.persistence.database.QueryExecutor;
-import senai.centroweg.infrastructure.persistence.exception.DatabaseException;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 
 public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
 
@@ -20,8 +19,15 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
     public Transaction save(Transaction transaction) {
         String query = """
                 INSERT INTO transactions (
-                    id, senderAccountId, receiverAccountId, rawAmount, 
-                    feeAmount, totalAmount, transactionType, createdAt, confirmationAt
+                    id,
+                    sender_account_id,
+                    receiver_account_id,
+                    raw_amount,
+                    fee_amount,
+                    total_amount,
+                    transaction_type,
+                    created_at,
+                    confirmation_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
@@ -39,7 +45,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
             if (transaction.getConfirmationAt() != null) {
                 ps.setTimestamp(9, Timestamp.from(transaction.getConfirmationAt()));
             } else {
-                ps.setObject(9, null);
+                ps.setNull(9, Types.TIMESTAMP);
             }
 
             ps.executeUpdate();
