@@ -7,8 +7,15 @@ import senai.centroweg.domain.user.ports.UserRepositoryPort;
 
 public class AddNewUserUseCase {
 
-    UserRepositoryPort userRepository;
-    UserManager userManager;
+    private final UserRepositoryPort userRepository;
+    private final UserManager userManager;
+
+    public AddNewUserUseCase(UserRepositoryPort userRepository,
+                             UserManager userManager) {
+
+        this.userRepository = userRepository;
+        this.userManager = userManager;
+    }
 
     public User execute(NewUserCommand userCommand) {
 
