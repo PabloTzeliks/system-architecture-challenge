@@ -23,45 +23,48 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
         this.database = database;
     }
 
-    private List<Entry> mapRow(ResultSet rs) throws SQLException {
+    private Entry mapRow(ResultSet rs) throws SQLException {
 
-        List<Entry> entryList = new ArrayList<>();
-
-        while (rs.next()) {
-            entryList.add(new Entry(
-                    UUID.fromString(rs.getString("id")),
-                    UUID.fromString(rs.getString("accountId")),
-                    UUID.fromString(rs.getString("transactionId")),
-                    rs.getBigDecimal("amount"),
-                    rs.getTimestamp("creationDate").toInstant()
-            ));
-        }
-        return entryList;
+        return new Entry(
+                UUID.fromString(rs.getString("id")),
+                UUID.fromString(rs.getString("accountId")),
+                UUID.fromString(rs.getString("transactionId")),
+                rs.getBigDecimal("amount"),
+                rs.getTimestamp("creationDate").toInstant()
+        );
     }
 
     @Override
     public List<Entry> saveAll(List<Entry> entries) {
+
+        List<Entry> entriesReturn = new ArrayList<>();
+
         String query = """
                 INSERT INTO
                 entries(accountId, transactionId, amount, creationDate)
                 VALUES(?,?,?,?)
                 """;
 
-        try {
-            for (Entry entry : entries) {
-                database.extract(query, ps -> {
-                    ps.setObject(1, entry.getAccountId());
-                    ps.setObject(2, entry.getTransactionId());
-                    ps.setBigDecimal(3, entry.getAmount());
-                    ps.setTimestamp(4, java.sql.Timestamp.from(entry.getCreationDate()));
+        for (Entry entry : entries) {
+            database.extract(query, ps -> {
+                ps.setObject(1, entry.getAccountId());
+                ps.setObject(2, entry.getTransactionId());
+                ps.setBigDecimal(3, entry.getAmount());
+                ps.setTimestamp(4, Timestamp.from(entry.getCreationDate()));
 
-                    return ps.executeUpdate();
-                });
-            }
-            return entries;
-        } catch (Exception e) {
-            throw new DatabaseException("Erro ao salvar o lote de lançamento", e);
+                ps.executeUpdate();
+
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        entriesReturn.add(entry);
+                    }
+                }
+
+                return null;
+            });
         }
+
+        return entriesReturn;
     }
 
     @Override
