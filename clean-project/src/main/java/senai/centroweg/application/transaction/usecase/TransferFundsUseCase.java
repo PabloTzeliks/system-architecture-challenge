@@ -8,7 +8,6 @@ import senai.centroweg.domain.account.ports.AccountRepositoryPort;
 import senai.centroweg.domain.entry.model.Entry;
 import senai.centroweg.domain.entry.ports.EntryRepositoryPort;
 import senai.centroweg.domain.transaction.model.Transaction;
-import senai.centroweg.domain.transaction.model.TransactionType;
 import senai.centroweg.domain.transaction.ports.TransactionRepositoryPort;
 import senai.centroweg.domain.transaction.strategy.FeeCalculationStrategy;
 import senai.centroweg.domain.transaction.strategy.factory.FeeStrategyFactory;
