@@ -1,9 +1,10 @@
 package senai.centroweg.infrastructure.persistence.database;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Connection {
+public class DataSource {
 
     private static final String URL = "";
     private static final String USER = "";
