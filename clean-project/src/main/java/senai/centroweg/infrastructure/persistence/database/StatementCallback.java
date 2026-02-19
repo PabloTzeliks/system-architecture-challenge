@@ -4,6 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @FunctionalInterface
-public interface RowExtractor<T> {
+public interface StatementCallback<T> {
     T run(PreparedStatement preparedStatement) throws SQLException;
 }
