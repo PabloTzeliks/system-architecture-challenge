@@ -13,8 +13,7 @@ import senai.centroweg.domain.transaction.ports.TransactionRepositoryPort;
 import senai.centroweg.domain.transaction.strategy.FeeCalculationStrategy;
 import senai.centroweg.domain.transaction.strategy.factory.FeeStrategyFactory;
 
-import java.math.BigDecimal;
-import java.util.UUID;
+import java.util.List;
 
 public class TransferFundsUseCase {
 
@@ -34,21 +33,34 @@ public class TransferFundsUseCase {
         this.transactionManager = transactionManager;
     }
 
-    public Transaction execute(UUID senderId, UUID receiverId, BigDecimal amount, TransactionType type) {
+    public Transaction execute(TransferCommand cmd) {
 
-        FeeCalculationStrategy feeCalculationStrategy = FeeStrategyFactory.get(type);
+        FeeCalculationStrategy feeCalculationStrategy = FeeStrategyFactory.get(cmd.type());
 
-        Account senderAccount = accountRepository.findById(senderId)
-                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
-        Account receiverAccount = accountRepository.findById(receiverId)
+        Account senderAccount = accountRepository.findById(cmd.senderId())
                 .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
 
-        Transaction transaction = Transaction.create(senderId,receiverId,amount,type,feeCalculationStrategy);
+        Account receiverAccount = accountRepository.findById(cmd.receiverId())
+                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
+
+        Transaction transaction = Transaction.create(senderAccount.getId(),
+                receiverAccount.getId(),
+                cmd.amount(),cmd.type(),
+                feeCalculationStrategy);
+
 
         senderAccount.withdraw(transaction.getTotalAmount());
+
         receiverAccount.deposit(transaction.getRawAmount());
 
-        transactionRepository.save(transaction);
+        List<Entry> entryList = transaction.generateEntries();
+
+        transactionManager.execute(() -> {
+
+            transactionRepository.save(transaction);
+
+            entryRepository.saveAll(entryList);
+        });
 
         return transaction;
     }
