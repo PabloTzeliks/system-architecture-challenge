@@ -4,6 +4,9 @@ import senai.centroweg.domain.account.exception.AccountNotFoundException;
 import senai.centroweg.domain.account.model.Account;
 import senai.centroweg.domain.account.ports.AccountRepositoryPort;
 import senai.centroweg.domain.transaction.model.Transaction;
+import senai.centroweg.domain.transaction.model.TransactionType;
+import senai.centroweg.domain.transaction.strategy.FeeCalculationStrategy;
+import senai.centroweg.domain.transaction.strategy.factory.FeeStrategyFactory;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -15,13 +18,24 @@ public class TransferFundsUseCase {
         this.accountRepository = accountRepository;
     }
 
-    public Transaction execute(UUID senderId, UUID receiverId, BigDecimal amount) {
+    public Transaction execute(UUID senderId, UUID receiverId, BigDecimal amount, TransactionType type) {
+
+        FeeCalculationStrategy feeCalculationStrategy = FeeStrategyFactory.get(type);
 
         Account senderAccount = accountRepository.findById(senderId)
                 .orElseThrow(() -> new AccountNotFoundException("Conta com ID " + senderId + " não encontrada"));
         Account receiverAccount = accountRepository.findById(receiverId)
                 .orElseThrow(() -> new AccountNotFoundException("Conta com ID " + senderId + " não encontrada"));
 
+        Transaction transaction = Transaction.create(senderId,receiverId,amount,type,feeCalculationStrategy);
+
+        senderAccount.withdraw(transaction.getTotalAmount());
+        receiverAccount.deposit(transaction.getRawAmount());
+
+        accountRepository.save(senderAccount);
+        accountRepository.save(receiverAccount);
+
+        return transaction;
 
     }
 }
