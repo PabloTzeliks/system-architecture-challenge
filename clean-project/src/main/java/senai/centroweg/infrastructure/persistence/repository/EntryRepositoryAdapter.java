@@ -37,34 +37,26 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
     @Override
     public List<Entry> saveAll(List<Entry> entries) {
 
-        List<Entry> entriesReturn = new ArrayList<>();
-
         String query = """
                 INSERT INTO
                 entries(accountId, transactionId, amount, creationDate)
                 VALUES(?,?,?,?)
                 """;
 
-        for (Entry entry : entries) {
-            database.extract(query, ps -> {
+        return database.extract(query, ps -> {
+            for (Entry entry : entries) {
                 ps.setObject(1, entry.getAccountId());
                 ps.setObject(2, entry.getTransactionId());
                 ps.setBigDecimal(3, entry.getAmount());
                 ps.setTimestamp(4, Timestamp.from(entry.getCreationDate()));
 
-                ps.executeUpdate();
+                ps.addBatch();
+            }
 
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        entriesReturn.add(entry);
-                    }
-                }
+            ps.executeBatch();
 
-                return null;
-            });
-        }
-
-        return entriesReturn;
+            return entries;
+        });
     }
 
     @Override
