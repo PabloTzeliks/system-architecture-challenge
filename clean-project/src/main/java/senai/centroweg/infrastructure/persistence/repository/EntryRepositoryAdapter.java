@@ -68,7 +68,7 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
     }
 
     @Override
-    public List<Entry> findAllByAccountId(UUID id) {
+    public List<Entry> findAllByAccountId(UUID accountId) {
         String query = """
                 SELECT id, accountId, transactionId, amount, creationDate
                 FROM entries
@@ -76,9 +76,18 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
                 """;
 
         return database.extract(query, ps -> {
+
+            ps.setObject(1, accountId);
+
             try(ResultSet rs = ps.executeQuery();) {
 
-                return mapRow(rs);
+                List<Entry> entries = new ArrayList<>();
+
+                while (rs.next()) {
+                    entries.add(mapRow(rs));
+                }
+
+                return entries;
             } catch (SQLException e) {
 
                 throw new DatabaseException("Erro ao processar o ResultSet",e);
