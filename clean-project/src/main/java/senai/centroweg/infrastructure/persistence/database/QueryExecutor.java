@@ -2,6 +2,8 @@ package senai.centroweg.infrastructure.persistence.database;
 
 import senai.centroweg.infrastructure.persistence.exception.DatabaseException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -13,16 +15,32 @@ public class QueryExecutor {
         this.dataSource = dataSource;
     }
 
-    public <R> R extract(final String query, final StatementCallback<R> extractor) {
+    public <R> R extract(final String query, final StatementCallback<R> callback) {
 
-        try (var connection = dataSource.getConnection();
-             var preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        Connection activeConnection = ConnectionContext.get();
+        boolean isTransactional = (activeConnection != null);
 
-            preparedStatement.clearParameters();
+        Connection conn = null;
+        PreparedStatement ps = null;
 
-            return extractor.run(preparedStatement);
+        try {
+            conn = isTransactional ? activeConnection : dataSource.getConnection();
+
+            ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.clearParameters();
+
+            return callback.run(ps);
+
         } catch (SQLException ex) {
-            throw new DatabaseException("Erro no banco de dados: " + ex.getMessage(), ex);
+            throw new DatabaseException("Erro executando query: " + ex.getMessage(), ex);
+        } finally {
+            if (ps != null) {
+                try { ps.close(); } catch (SQLException ignored) {}
+            }
+
+            if (!isTransactional && conn != null) {
+                try { conn.close(); } catch (SQLException ignored) {}
+            }
         }
     }
 }
