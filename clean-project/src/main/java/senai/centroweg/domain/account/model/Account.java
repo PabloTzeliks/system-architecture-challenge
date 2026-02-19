@@ -1,8 +1,8 @@
 package senai.centroweg.domain.account.model;
 
 import lombok.Getter;
-import senai.centroweg.domain.common.exception.DomainException;
 import senai.centroweg.domain.account.exception.InsufficientFundsException;
+import senai.centroweg.domain.common.exception.DomainException;
 
 import java.math.BigDecimal;
 import java.time.Instant;

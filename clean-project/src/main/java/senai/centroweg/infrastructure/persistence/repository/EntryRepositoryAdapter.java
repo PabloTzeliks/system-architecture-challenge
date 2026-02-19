@@ -3,16 +3,13 @@ package senai.centroweg.infrastructure.persistence.repository;
 import senai.centroweg.domain.entry.model.Entry;
 import senai.centroweg.domain.entry.ports.EntryRepositoryPort;
 import senai.centroweg.infrastructure.persistence.database.QueryExecutor;
-import senai.centroweg.infrastructure.persistence.exception.DatabaseException;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class EntryRepositoryAdapter implements EntryRepositoryPort {
