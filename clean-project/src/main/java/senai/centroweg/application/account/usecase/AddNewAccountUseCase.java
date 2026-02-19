@@ -10,9 +10,9 @@ import senai.centroweg.domain.user.ports.UserRepositoryPort;
 
 public class AddNewAccountUseCase {
 
-    UserRepositoryPort userRepository;
-    AccountRepositoryPort accountRepository;
-    AccountManager accountManager;
+    private final UserRepositoryPort userRepository;
+    private final AccountRepositoryPort accountRepository;
+    private final AccountManager accountManager;
 
     public AddNewAccountUseCase(UserRepositoryPort userRepository,
                                 AccountRepositoryPort accountRepository,
