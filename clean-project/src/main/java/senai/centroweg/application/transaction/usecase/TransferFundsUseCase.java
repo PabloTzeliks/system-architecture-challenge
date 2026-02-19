@@ -5,6 +5,7 @@ import senai.centroweg.domain.account.model.Account;
 import senai.centroweg.domain.account.ports.AccountRepositoryPort;
 import senai.centroweg.domain.transaction.model.Transaction;
 import senai.centroweg.domain.transaction.model.TransactionType;
+import senai.centroweg.domain.transaction.ports.TransactionRepositoryPort;
 import senai.centroweg.domain.transaction.strategy.FeeCalculationStrategy;
 import senai.centroweg.domain.transaction.strategy.factory.FeeStrategyFactory;
 
@@ -13,9 +14,11 @@ import java.util.UUID;
 
 public class TransferFundsUseCase {
     AccountRepositoryPort accountRepository;
+    TransactionRepositoryPort transactionRepository;
 
-    public TransferFundsUseCase(AccountRepositoryPort accountRepository) {
+    public TransferFundsUseCase(AccountRepositoryPort accountRepository, TransactionRepositoryPort transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public Transaction execute(UUID senderId, UUID receiverId, BigDecimal amount, TransactionType type) {
@@ -32,10 +35,8 @@ public class TransferFundsUseCase {
         senderAccount.withdraw(transaction.getTotalAmount());
         receiverAccount.deposit(transaction.getRawAmount());
 
-        accountRepository.save(senderAccount);
-        accountRepository.save(receiverAccount);
+        transactionRepository.save(transaction);
 
         return transaction;
-
     }
 }
