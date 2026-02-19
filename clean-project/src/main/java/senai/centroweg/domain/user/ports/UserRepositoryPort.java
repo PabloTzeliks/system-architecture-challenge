@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface UserRepositoryPort {
 
-    User create(User user);
+    User save(User user);
 
     Optional<User> findById(UUID id);
 }

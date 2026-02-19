@@ -25,7 +25,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public User create(User user) {
+    public User save(User user) {
 
         String query = """
                 INSERT INTO
