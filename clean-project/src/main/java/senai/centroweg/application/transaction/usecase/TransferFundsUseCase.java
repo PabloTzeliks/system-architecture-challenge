@@ -26,9 +26,9 @@ public class TransferFundsUseCase {
         FeeCalculationStrategy feeCalculationStrategy = FeeStrategyFactory.get(type);
 
         Account senderAccount = accountRepository.findById(senderId)
-                .orElseThrow(() -> new AccountNotFoundException("Conta com ID " + senderId + " não encontrada"));
+                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
         Account receiverAccount = accountRepository.findById(receiverId)
-                .orElseThrow(() -> new AccountNotFoundException("Conta com ID " + senderId + " não encontrada"));
+                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
 
         Transaction transaction = Transaction.create(senderId,receiverId,amount,type,feeCalculationStrategy);
 
