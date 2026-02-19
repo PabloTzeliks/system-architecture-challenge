@@ -26,28 +26,24 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
                 """;
 
         return database.extract(query, ps -> {
-            try {
-                ps.setObject(1, transaction.getId());
-                ps.setObject(2, transaction.getSenderAccountId());
-                ps.setObject(3, transaction.getReceiverAccountId());
-                ps.setBigDecimal(4, transaction.getRawAmount());
-                ps.setBigDecimal(5, transaction.getFeeAmount());
-                ps.setBigDecimal(6, transaction.getTotalAmount());
-                ps.setString(7, transaction.getType().name());
-                ps.setTimestamp(8, Timestamp.from(transaction.getCreatedAt()));
 
-                if (transaction.getConfirmationAt() != null) {
-                    ps.setTimestamp(9, Timestamp.from(transaction.getConfirmationAt()));
-                } else {
-                    ps.setObject(9, null);
-                }
+            ps.setObject(1, transaction.getId());
+            ps.setObject(2, transaction.getSenderAccountId());
+            ps.setObject(3, transaction.getReceiverAccountId());
+            ps.setBigDecimal(4, transaction.getRawAmount());
+            ps.setBigDecimal(5, transaction.getFeeAmount());
+            ps.setBigDecimal(6, transaction.getTotalAmount());
+            ps.setString(7, transaction.getType().name());
+            ps.setTimestamp(8, Timestamp.from(transaction.getCreatedAt()));
 
-                ps.executeUpdate();
-                return transaction;
-
-            } catch (SQLException e) {
-                throw new DatabaseException("Erro ao persistir transação", e);
+            if (transaction.getConfirmationAt() != null) {
+                ps.setTimestamp(9, Timestamp.from(transaction.getConfirmationAt()));
+            } else {
+                ps.setObject(9, null);
             }
+
+            ps.executeUpdate();
+            return transaction;
         });
     }
 }

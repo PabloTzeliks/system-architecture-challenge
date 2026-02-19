@@ -25,7 +25,6 @@ public class TransferFundsUseCase {
                                 TransactionRepositoryPort transactionRepository,
                                 EntryRepositoryPort entryRepository,
                                 TransactionManager transactionManager) {
-
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.entryRepository = entryRepository;
@@ -34,31 +33,31 @@ public class TransferFundsUseCase {
 
     public Transaction execute(TransferCommand cmd) {
 
-        FeeCalculationStrategy feeCalculationStrategy = FeeStrategyFactory.get(cmd.type());
+        FeeCalculationStrategy strategy = FeeStrategyFactory.get(cmd.type());
 
-        Account senderAccount = accountRepository.findById(cmd.senderId())
-                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
+        Account sender = accountRepository.findById(cmd.senderId())
+                .orElseThrow(() -> new AccountNotFoundException("Remetente não encontrado."));
 
-        Account receiverAccount = accountRepository.findById(cmd.receiverId())
-                .orElseThrow(() -> new AccountNotFoundException("Conta não foi encontrada"));
+        Account receiver = accountRepository.findById(cmd.receiverId())
+                .orElseThrow(() -> new AccountNotFoundException("Destinatário não encontrado."));
 
-        Transaction transaction = Transaction.create(senderAccount.getId(),
-                receiverAccount.getId(),
-                cmd.amount(),cmd.type(),
-                feeCalculationStrategy);
+        sender.calculateCurrentBalance(entryRepository.findAllByAccountId(sender.getId()));
 
+        Transaction transaction = Transaction.create(
+                sender.getId(),
+                receiver.getId(),
+                cmd.amount(),
+                cmd.type(),
+                strategy
+        );
 
-        senderAccount.withdraw(transaction.getTotalAmount());
+        sender.withdraw(transaction.getTotalAmount());
 
-        receiverAccount.deposit(transaction.getRawAmount());
-
-        List<Entry> entryList = transaction.generateEntries();
+        List<Entry> entries = transaction.generateEntries();
 
         transactionManager.execute(() -> {
-
             transactionRepository.save(transaction);
-
-            entryRepository.saveAll(entryList);
+            entryRepository.saveAll(entries);
         });
 
         return transaction;

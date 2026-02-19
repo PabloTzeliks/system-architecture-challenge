@@ -60,7 +60,7 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
     }
 
     @Override
-    public List<Entry> findAllByAccountId(UUID accountId) {
+    public List<BigDecimal> findAllByAccountId(UUID accountId) {
 
         String query = """
             SELECT id, account_id, transaction_id, amount, creation_date
@@ -73,10 +73,10 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
             ps.setObject(1, accountId);
 
             try (ResultSet rs = ps.executeQuery()) {
-                List<Entry> entries = new ArrayList<>();
+                List<BigDecimal> entries = new ArrayList<>();
 
                 while (rs.next()) {
-                    entries.add(mapRow(rs));
+                    entries.add(rs.getBigDecimal("amount"));
                 }
 
                 return entries;
