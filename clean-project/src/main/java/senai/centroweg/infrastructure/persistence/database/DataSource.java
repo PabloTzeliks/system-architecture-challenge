@@ -6,11 +6,17 @@ import java.sql.SQLException;
 
 public class DataSource {
 
-    private static final String URL = "";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private final String url;
+    private final String user;
+    private final String password;
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public DataSource(String url, String user, String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+    }
+
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 }
