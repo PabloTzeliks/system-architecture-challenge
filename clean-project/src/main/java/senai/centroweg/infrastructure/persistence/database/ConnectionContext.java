@@ -14,7 +14,7 @@ public class ConnectionContext {
         return CONTEXT.get();
     }
 
-    public static void remove() {
+    public static void clear() {
         CONTEXT.remove();
     }
 }
