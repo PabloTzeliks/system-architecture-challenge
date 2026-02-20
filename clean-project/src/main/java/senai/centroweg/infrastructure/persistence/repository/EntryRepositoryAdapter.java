@@ -24,10 +24,10 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
 
         return new Entry(
                 UUID.fromString(rs.getString("id")),
-                UUID.fromString(rs.getString("accountId")),
-                UUID.fromString(rs.getString("transactionId")),
+                UUID.fromString(rs.getString("account_id")),
+                UUID.fromString(rs.getString("transaction_id")),
                 rs.getBigDecimal("amount"),
-                rs.getTimestamp("creationDate").toInstant()
+                rs.getTimestamp("creation_date").toInstant()
         );
     }
 
@@ -36,7 +36,7 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
 
         String query = """
                 INSERT INTO
-                entries(accountId, transactionId, amount, creationDate)
+                entries(account_id, transaction_id, amount, creation_date)
                 VALUES(?,?,?,?)
                 """;
 
