@@ -32,6 +32,11 @@ public class JdbcTransactionManager implements TransactionManager {
                 connection.commit();
 
             } catch (Exception e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new DatabaseException("Transação falhou. Erro ao executar Rollback. Observe os detalhes: " + e.getMessage(), e);
+                }
                 throw new DatabaseException("Erro ao executar transação. Rollback executado. Observe os detalhes: " + e.getMessage(), e);
             } finally {
                 connection.setAutoCommit(true);
