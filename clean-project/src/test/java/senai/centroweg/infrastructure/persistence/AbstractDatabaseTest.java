@@ -14,14 +14,13 @@ public abstract class AbstractDatabaseTest {
 
     @BeforeEach
     void setupDatabase() throws Exception {
-        // Instancia a sua classe com os dados do H2
+
         dataSource = new DataSource(
                 "jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
                 "sa",
                 ""
         );
 
-        // Limpa e constrói o banco em memória
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 

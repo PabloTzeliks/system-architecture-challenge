@@ -25,7 +25,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
                     raw_amount,
                     fee_amount,
                     total_amount,
-                    transaction_type,
+                    type,
                     created_at,
                     confirmation_at
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)

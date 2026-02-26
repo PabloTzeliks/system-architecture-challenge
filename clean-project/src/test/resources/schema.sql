@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 CREATE TABLE IF NOT EXISTS entries (
-    id UUID PRIMARY KEY DEFAULT random_uuid(),
+    id UUID PRIMARY KEY,
     account_id UUID NOT NULL,
     transaction_id UUID NOT NULL,
     amount DECIMAL(19,4) NOT NULL,

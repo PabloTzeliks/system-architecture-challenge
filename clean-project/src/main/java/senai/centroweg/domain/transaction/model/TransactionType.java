@@ -8,5 +8,5 @@ public enum TransactionType {
     PIX,
     TED,
     CREDIT_CARD,
-    DEBIT_CARD;
+    DEBIT_CARD
 }
