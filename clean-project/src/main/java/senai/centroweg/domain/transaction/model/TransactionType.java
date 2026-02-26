@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum TransactionType {
 
-    PIX(), // 0
-    TED(), // 0.5
-    CREDIT_CARD(), // 1
-    DEBIT_CARD(); // 3.5
+    PIX(),
+    TED(),
+    CREDIT_CARD(),
+    DEBIT_CARD();
 }
