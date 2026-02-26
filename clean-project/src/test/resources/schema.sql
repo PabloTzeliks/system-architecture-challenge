@@ -1,8 +1,14 @@
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS accounts (
     id UUID PRIMARY KEY,
     user_id UUID NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL
+    created_at TIMESTAMP NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
@@ -23,6 +29,7 @@ CREATE TABLE IF NOT EXISTS entries (
     transaction_id UUID NOT NULL,
     amount DECIMAL(19,4) NOT NULL,
     created_at TIMESTAMP NOT NULL,
+
     FOREIGN KEY (account_id) REFERENCES accounts(id),
     FOREIGN KEY (transaction_id) REFERENCES transactions(id)
 );

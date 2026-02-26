@@ -49,8 +49,8 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     public Optional<Account> findById(UUID id) {
 
         String query = """
-                SELECT id, user_id, current_balance, created_at
-                FROM users
+                SELECT id, user_id, created_at
+                FROM accounts
                 WHERE id = ?
                 """;
 
