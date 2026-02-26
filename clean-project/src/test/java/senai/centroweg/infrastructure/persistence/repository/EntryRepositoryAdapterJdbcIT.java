@@ -32,13 +32,24 @@ class EntryRepositoryAdapterJdbcIT extends AbstractDatabaseTest {
     }
 
     private void insertDummyAccount(UUID accountId) throws Exception {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO accounts (id, user_id, created_at) VALUES (?, ?, ?)")) {
-            ps.setObject(1, accountId);
-            ps.setObject(2, UUID.randomUUID());
-            ps.setTimestamp(3, java.sql.Timestamp.from(Instant.now()));
-            ps.executeUpdate();
+        UUID dummyUserId = UUID.randomUUID();
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            try (PreparedStatement psUser = conn.prepareStatement(
+                    "INSERT INTO users (id, username) VALUES (?, ?)")) {
+                psUser.setObject(1, dummyUserId);
+                psUser.setString(2, "DummyUser");
+                psUser.executeUpdate();
+            }
+
+            try (PreparedStatement psAccount = conn.prepareStatement(
+                    "INSERT INTO accounts (id, user_id, created_at) VALUES (?, ?, ?)")) {
+                psAccount.setObject(1, accountId);
+                psAccount.setObject(2, dummyUserId); // <--- Aqui usamos o ID real que está no banco!
+                psAccount.setTimestamp(3, java.sql.Timestamp.from(Instant.now()));
+                psAccount.executeUpdate();
+            }
         }
     }
 
