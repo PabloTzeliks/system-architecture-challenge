@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS entries (
     account_id UUID NOT NULL,
     transaction_id UUID NOT NULL,
     amount DECIMAL(19,4) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     FOREIGN KEY (account_id) REFERENCES accounts(id),
     FOREIGN KEY (transaction_id) REFERENCES transactions(id)
 );
