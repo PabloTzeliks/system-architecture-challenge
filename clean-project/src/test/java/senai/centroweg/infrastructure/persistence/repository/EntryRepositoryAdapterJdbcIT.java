@@ -34,7 +34,7 @@ class EntryRepositoryAdapterJdbcIT extends AbstractDatabaseTest {
     private void insertDummyAccount(UUID accountId) throws Exception {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO accounts (id, user_id, name, created_at) VALUES (?, ?, 'User', ?)")) {
+                     "INSERT INTO accounts (id, user_id, created_at) VALUES (?, ?, ?)")) {
             ps.setObject(1, accountId);
             ps.setObject(2, UUID.randomUUID());
             ps.setTimestamp(3, java.sql.Timestamp.from(Instant.now()));

@@ -31,23 +31,46 @@ class TransactionRepositoryAdapterJdbcIT extends AbstractDatabaseTest {
     }
 
     private void createDummyAccounts(UUID senderId, UUID receiverId) throws Exception {
-        String insertAccount = "INSERT INTO accounts (id, user_id, name, created_at) VALUES (?, ?, 'Teste', ?)";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(insertAccount)) {
+        String insertUser = "INSERT INTO users (id, username) VALUES (?, ?)";
+        String insertAccount = "INSERT INTO accounts (id, user_id, created_at) VALUES (?, ?, ?)";
 
-            // Remetente
-            ps.setObject(1, senderId);
-            ps.setObject(2, UUID.randomUUID());
-            ps.setTimestamp(3, Timestamp.from(Instant.now()));
-            ps.addBatch();
+        try (Connection conn = dataSource.getConnection()) {
 
-            // Destinatário
-            ps.setObject(1, receiverId);
-            ps.setObject(2, UUID.randomUUID());
-            ps.setTimestamp(3, Timestamp.from(Instant.now()));
-            ps.addBatch();
+            // 1. Gera os IDs dos Usuários
+            UUID senderUserId = UUID.randomUUID();
+            UUID receiverUserId = UUID.randomUUID();
 
-            ps.executeBatch();
+            // 2. Insere os Usuários PRIMEIRO (Para satisfazer a Foreign Key)
+            try (PreparedStatement psUser = conn.prepareStatement(insertUser)) {
+                // User Remetente
+                psUser.setObject(1, senderUserId);
+                psUser.setString(2, "SenderUser");
+                psUser.addBatch();
+
+                // User Destinatário
+                psUser.setObject(1, receiverUserId);
+                psUser.setString(2, "ReceiverUser");
+                psUser.addBatch();
+
+                psUser.executeBatch();
+            }
+
+            // 3. Insere as Contas ligadas aos Usuários
+            try (PreparedStatement psAccount = conn.prepareStatement(insertAccount)) {
+                // Conta Remetente
+                psAccount.setObject(1, senderId);
+                psAccount.setObject(2, senderUserId); // Usa o ID do user que acabou de criar
+                psAccount.setTimestamp(3, java.sql.Timestamp.from(Instant.now()));
+                psAccount.addBatch();
+
+                // Conta Destinatário
+                psAccount.setObject(1, receiverId);
+                psAccount.setObject(2, receiverUserId); // Usa o ID do user que acabou de criar
+                psAccount.setTimestamp(3, java.sql.Timestamp.from(Instant.now()));
+                psAccount.addBatch();
+
+                psAccount.executeBatch();
+            }
         }
     }
 
