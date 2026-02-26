@@ -44,7 +44,7 @@ public class Entry {
         return new Entry(
                 transaction.getReceiverAccountId(),
                 transaction.getId(),
-                amount,
+                amount.abs(),
                 Instant.now()
         );
     }
