@@ -1,9 +1,5 @@
 # 🏦 Gateway de Pagamentos — Arquitetura de Sistemas
 
-> **Trabalho Final da Unidade Curricular de Arquitetura de Sistemas**
-> SENAI — Professor Lucas Santos da Silva
-> Autores: **Pablo Ruan Tzeliks** e **Bruno Luís Medeiros**
-
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white)
