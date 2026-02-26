@@ -7,10 +7,11 @@ import java.math.BigDecimal;
 
 public class CreditCardStrategy implements FeeCalculationStrategy {
 
+    private static final BigDecimal CREDIT_RATE = new BigDecimal("0.035");
+
     @Override
     public BigDecimal calculate(BigDecimal amount, TransactionType type) {
 
-        BigDecimal percentage = BigDecimal.valueOf(TransactionType.CREDIT_CARD.getTax());
-        return amount.multiply(percentage);
+        return amount.multiply(CREDIT_RATE);
     }
 }

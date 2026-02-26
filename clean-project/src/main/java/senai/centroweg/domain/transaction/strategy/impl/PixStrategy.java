@@ -7,10 +7,11 @@ import java.math.BigDecimal;
 
 public class PixStrategy implements FeeCalculationStrategy {
 
+    private static final BigDecimal PIX_RATE = new BigDecimal("0");
+
     @Override
     public BigDecimal calculate(BigDecimal amount, TransactionType type) {
 
-        BigDecimal percentage = BigDecimal.valueOf(TransactionType.PIX.getTax());
-        return amount.multiply(percentage);
+        return amount.multiply(PIX_RATE);
     }
 }

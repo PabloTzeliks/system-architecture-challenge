@@ -21,8 +21,8 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     private Account mapRow(ResultSet rs) throws SQLException {
         return new Account(
                 UUID.fromString(rs.getString("id")),
-                UUID.fromString(rs.getString("userId")),
-                rs.getTimestamp("createdAt").toInstant()
+                UUID.fromString(rs.getString("user_id")),
+                rs.getTimestamp("created_at").toInstant()
         );
     }
 
@@ -31,14 +31,14 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
 
         String query = """
                 INSERT INTO
-                accounts (id, userId, createdAt)
-                VALUES (?, ?, ?, ?)
+                accounts (id, user_id, created_at)
+                VALUES (?, ?, ?)
                 """;
 
         return database.extract(query, ps -> {
             ps.setObject(1, account.getId());
             ps.setObject(2, account.getUserId());
-            ps.setTimestamp(4, Timestamp.from(account.getCreatedAt()));
+            ps.setTimestamp(3, Timestamp.from(account.getCreatedAt()));
 
             ps.executeUpdate();
             return account;
@@ -49,8 +49,8 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     public Optional<Account> findById(UUID id) {
 
         String query = """
-                SELECT id, userId, currentBalance, createdAt
-                FROM users
+                SELECT id, user_id, created_at
+                FROM accounts
                 WHERE id = ?
                 """;
 

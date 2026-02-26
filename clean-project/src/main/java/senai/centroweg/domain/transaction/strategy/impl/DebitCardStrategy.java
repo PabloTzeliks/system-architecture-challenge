@@ -7,10 +7,11 @@ import java.math.BigDecimal;
 
 public class DebitCardStrategy implements FeeCalculationStrategy {
 
+    private static final BigDecimal DEBIT_RATE = new BigDecimal("0.01");
+
     @Override
     public BigDecimal calculate(BigDecimal amount, TransactionType type) {
 
-        BigDecimal percentage = BigDecimal.valueOf(TransactionType.DEBIT_CARD.getTax());
-        return amount.multiply(percentage);
+        return amount.multiply(DEBIT_RATE);
     }
 }

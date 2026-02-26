@@ -24,10 +24,10 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
 
         return new Entry(
                 UUID.fromString(rs.getString("id")),
-                UUID.fromString(rs.getString("accountId")),
-                UUID.fromString(rs.getString("transactionId")),
+                UUID.fromString(rs.getString("account_id")),
+                UUID.fromString(rs.getString("transaction_id")),
                 rs.getBigDecimal("amount"),
-                rs.getTimestamp("creationDate").toInstant()
+                rs.getTimestamp("created_at").toInstant()
         );
     }
 
@@ -36,16 +36,17 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
 
         String query = """
                 INSERT INTO
-                entries(accountId, transactionId, amount, creationDate)
-                VALUES(?,?,?,?)
+                entries(id, account_id, transaction_id, amount, created_at)
+                VALUES(?,?,?,?,?)
                 """;
 
         return database.extract(query, ps -> {
             for (Entry entry : entries) {
-                ps.setObject(1, entry.getAccountId());
-                ps.setObject(2, entry.getTransactionId());
-                ps.setBigDecimal(3, entry.getAmount());
-                ps.setTimestamp(4, Timestamp.from(entry.getCreationDate()));
+                ps.setObject(1, entry.getId());
+                ps.setObject(2, entry.getAccountId());
+                ps.setObject(3, entry.getTransactionId());
+                ps.setBigDecimal(4, entry.getAmount());
+                ps.setTimestamp(5, Timestamp.from(entry.getCreatedAt()));
 
                 ps.addBatch();
             }
@@ -60,10 +61,10 @@ public class EntryRepositoryAdapter implements EntryRepositoryPort {
     public List<BigDecimal> findAllByAccountId(UUID accountId) {
 
         String query = """
-            SELECT id, account_id, transaction_id, amount, creation_date
+            SELECT id, account_id, transaction_id, amount, created_at
             FROM entries
             WHERE account_id = ?
-            ORDER BY creation_date ASC
+            ORDER BY created_at ASC
             """;
 
         return database.extract(query, ps -> {

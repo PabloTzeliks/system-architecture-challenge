@@ -13,22 +13,22 @@ public class Entry {
     private final UUID accountId;
     private final UUID transactionId;
     private final BigDecimal amount;
-    private final Instant creationDate;
+    private final Instant createdAt;
 
-    public Entry(UUID id, UUID accountId, UUID transactionId, BigDecimal amount, Instant creationDate) {
+    public Entry(UUID id, UUID accountId, UUID transactionId, BigDecimal amount, Instant createdAt) {
         this.id = id;
         this.accountId = accountId;
         this.transactionId = transactionId;
         this.amount = amount;
-        this.creationDate = creationDate;
+        this.createdAt = createdAt;
     }
 
-    public Entry(UUID accountId, UUID transactionId, BigDecimal amount, Instant creationDate) {
+    public Entry(UUID accountId, UUID transactionId, BigDecimal amount, Instant createdAt) {
         this.id = UUID.randomUUID();
         this.accountId = accountId;
         this.transactionId = transactionId;
         this.amount = amount;
-        this.creationDate = Instant.now();
+        this.createdAt = createdAt;
     }
 
     public static Entry createDebit(BigDecimal amount, Transaction transaction) {
@@ -44,7 +44,7 @@ public class Entry {
         return new Entry(
                 transaction.getReceiverAccountId(),
                 transaction.getId(),
-                amount,
+                amount.abs(),
                 Instant.now()
         );
     }
