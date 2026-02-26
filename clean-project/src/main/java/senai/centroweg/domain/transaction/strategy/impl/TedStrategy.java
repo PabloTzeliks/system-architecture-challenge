@@ -7,10 +7,11 @@ import java.math.BigDecimal;
 
 public class TedStrategy implements FeeCalculationStrategy {
 
+    private static final BigDecimal TED_RATE = new BigDecimal("0.005");
+
     @Override
     public BigDecimal calculate(BigDecimal amount, TransactionType type) {
 
-        BigDecimal percentage = BigDecimal.valueOf(TransactionType.TED.getTax());
-        return amount.multiply(percentage);
+        return amount.multiply(TED_RATE);
     }
 }
