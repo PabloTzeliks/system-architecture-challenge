@@ -397,7 +397,7 @@ system-architecture-challenge/
 <p>Um agradecimento especial ao nosso Professor e Mentor Técnico, que nos desafiou a sair da zona de conforto, durante toda a Unidade Curricular de Arquitetura de Sistemas</strong> no CentroWEG:</p>
 
 <div align="center">
-    <strong>Prof. Lucas Santos da Silva</strong><br>
+    <strong>Prof. Lucas Souza dos Santos</strong><br>
     <a href="https://www.linkedin.com/in/engineer-lucas-ss/"><br>
       <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Prof Lucas">
     </a>
@@ -406,5 +406,5 @@ system-architecture-challenge/
 ---
 
 <blockquote>
-  <em>Este projeto foi desenvolvido como trabalho acadêmico para a Unidade Curricular de Arquitetura de Sistemas do SENAI / CentroWEG, sob orientação do Prof. Lucas Santos da Silva. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.</em>
+  <em>Este projeto foi desenvolvido como trabalho acadêmico para a Unidade Curricular de Arquitetura de Sistemas do SENAI / CentroWEG, sob orientação do Prof. Lucas Souza dos Santos. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.</em>
 </blockquote>
