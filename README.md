@@ -6,7 +6,6 @@
 ![H2](https://img.shields.io/badge/H2-In--Memory-009fdb?style=for-the-badge)
 ![JUnit5](https://img.shields.io/badge/JUnit-5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 ![JaCoCo](https://img.shields.io/badge/JaCoCo-~80%25%20Coverage-brightgreen?style=for-the-badge)
-![Lombok](https://img.shields.io/badge/Lombok-1.18-pink?style=for-the-badge)
 
 ---
 
@@ -16,7 +15,7 @@ Este repositório é o resultado de um exercício acadêmico com propósito muit
 
 Para isso, construímos **dois módulos que resolvem exatamente o mesmo problema** — um Gateway de Pagamentos / Sistema Bancário simples — mas com abordagens radicalmente opostas:
 
-| Módulo | Filosofia | Resultado |
+|  Módulo  | Filosofia | Resultado |
 |---|---|---|
 | `chaos-project` | Zero arquitetura, código escrito "na raça" | Funciona, mas é frágil, impossível de testar e de manter |
 | `clean-project` | Clean Architecture, DDD, SOLID, testes | Robusto, testável, extensível e correto por design |
@@ -33,11 +32,13 @@ O `chaos-project` foi construído deliberadamente violando todos os princípios 
 
 - **`float` para dinheiro** — tipo de ponto flutuante com erros de precisão, inaceitável para valores monetários.
 - **God Class / God Method** — toda a lógica na `main()`, sem nenhuma separação de responsabilidades.
-- **Modelos anêmicos** — `Account` e `Transaction` são apenas bags of data, sem comportamento de domínio.
+- **Modelos anêmicos** — `Account` e `Transaction` são apenas bags of data, sem comportamento de domínio, cheios de Code Smells.
 - **SQL hardcoded na lógica de negócio** — acoplamento total entre regras de negócio e infraestrutura de persistência.
 - **Ausência total de testes** — impossível garantir que uma mudança não quebre outra funcionalidade.
 - **Taxas hardcoded com `if/else`** — adicionar um novo tipo de transação exige mexer no coração do sistema.
 - **Sem tratamento de transações ACID** — operações de crédito e débito podem ficar inconsistentes em caso de falha.
+
+<img width="1169" height="718" alt="entidade-chaos" src="https://github.com/user-attachments/assets/cc31362b-9cf4-4d83-adc4-0233b2874061"/>
 
 ---
 
@@ -71,7 +72,7 @@ clean-project/
 
 A **regra de dependência** é sempre respeitada: o domínio não conhece a infraestrutura. A inversão de dependência é garantida pelos **Ports** (interfaces) que o domínio define e a infraestrutura implementa.
 
-![Diagrama de Arquitetura](docs/images/architecture-diagram.png)
+<img width="1829" height="669" alt="entidades-clean" src="https://github.com/user-attachments/assets/23bb1604-d87e-4b0a-8f5b-d91e93858477" />
 
 ---
 
@@ -107,7 +108,7 @@ public void calculateCurrentBalance(List<BigDecimal> amounts) {
 
 **Por que isso é melhor?** Porque o banco de dados nunca mente — cada centavo que entrou e saiu está registrado, a regra de negócio vive no domínio (e não em um `SELECT balance FROM accounts`), e a consistência é garantida por design, sem depender de um `UPDATE` atômico no saldo.
 
-![Diagrama de Event Sourcing](docs/images/event-sourcing-diagram.png)
+<img width="1150" height="1117" alt="event-sourcing" src="https://github.com/user-attachments/assets/67696f1d-9b58-42b8-8c09-584e6debd49a" />
 
 ---
 
@@ -131,6 +132,8 @@ Transaction transaction = Transaction.create(sender.getId(), receiver.getId(),
                                              cmd.amount(), cmd.type(), strategy);
 ```
 
+<img width="1055" height="1129" alt="strategy" src="https://github.com/user-attachments/assets/22b38830-062c-4f60-ae92-d241f243807b" />
+
 ---
 
 ### 🔄 Gerenciamento Customizado de Transações JDBC
@@ -150,6 +153,8 @@ TransactionManager.execute(action)
 ```
 
 O `QueryExecutor` aplica o padrão **Execute Around** com `StatementCallback`, reduzindo drasticamente o código boilerplate nos repositórios: toda a gestão de `PreparedStatement` e tratamento de `SQLException` fica centralizada em um único lugar.
+
+<img width="1035" height="1196" alt="execute-around" src="https://github.com/user-attachments/assets/d7b3ed3b-43d1-45b9-8bf9-45431030d6c4" />
 
 ---
 
@@ -256,7 +261,8 @@ O teste mais completo: simula um fluxo bancário real com múltiplas transferên
 | Infraestrutura | Coberta por testes de integração |
 | **Total** | **~80%** |
 
-![Relatório JaCoCo](docs/images/jacoco-report.png)
+<img width="1504" height="730" alt="testes-jacoco" src="https://github.com/user-attachments/assets/fa425086-10eb-40c3-bfa3-629f6544be59" />
+
 
 ---
 
@@ -266,16 +272,17 @@ O teste mais completo: simula um fluxo bancário real com múltiplas transferên
 
 O maior desafio foi construir a infraestrutura de persistência **completamente do zero, sem nenhum ORM**. Foi necessário recriar a mecânica que frameworks como JPA/Hibernate fornecem automaticamente:
 
+- Modelagem precisa das entidades de domínio seguindo os princípios do **DDD**, garantindo que as regras de negócio residam nas entidades e não nos serviços de aplicação.
 - Implementação do padrão **Execute Around** no `QueryExecutor` com `StatementCallback`, centralizando o boilerplate de JDBC e reduzindo drasticamente o código dos `Repository Adapters`.
 - Criação de uma **pool de conexões manual** com o `DataSource` e gerenciamento de ciclo de vida de `Connection`.
 - Implementação do `JdbcTransactionManager` com `ThreadLocal` (`ConnectionContext`) para simular o comportamento do `@Transactional`, garantindo que todos os repositórios dentro de um mesmo caso de uso utilizem a mesma conexão e participem da mesma transação ACID.
-- Modelagem precisa das entidades de domínio seguindo os princípios do **DDD**, garantindo que as regras de negócio residam nas entidades e não nos serviços de aplicação.
 
 ### Bruno Luís Medeiros — Domínio e Aplicação
 
 O desafio foi garantir que os **Casos de Uso** orquestrassem a lógica de negócio de forma limpa, coesa e testável:
 
 - Estruturação do `TransferFundsUseCase` de maneira que toda a complexidade de validação, cálculo e persistência ficasse organizada sem vazar responsabilidades entre camadas.
+- Criação dos `Repositories` seguindo o padrão Execute Around feito.
 - Engenharia do **Event Sourcing** para que o cálculo de saldo acontecesse exclusivamente no domínio, sem que a arquitetura dependesse de uma coluna `balance` no banco de dados para validar regras vitais de negócio.
 - Aplicação do **padrão Strategy** para cálculo de taxas de forma que o domínio permanecesse fechado para modificação e aberto para extensão (OCP).
 
@@ -336,14 +343,14 @@ system-architecture-challenge/
 
 ## 📐 Diagramas
 
-### Diagrama de Classes — Domínio (clean-project)
+### Decisões Iniciais
 
-![Diagrama de Classes do Domínio](docs/images/domain-class-diagram.png)
+<img width="1065" height="1065" alt="planejamento-inicial" src="https://github.com/user-attachments/assets/ffde17e7-e046-49c3-9a58-75a3e7296111" />
 
-### Diagrama de Decisões Arquiteturais
+### Importantes Decisões Arquiteturais
 
-![Diagrama de Decisões Arquiteturais](docs/images/architectural-decisions.png)
+<img width="1189" height="1090" alt="decisao-event-sourcing" src="https://github.com/user-attachments/assets/3f499643-aca8-4ae5-bacb-859e041f776d" />
 
 ---
 
-*Este projeto foi desenvolvido como trabalho acadêmico final para a Unidade Curricular de Arquitetura de Sistemas do SENAI, sob orientação do Prof. Lucas Santos da Silva. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.*
+*Este projeto foi desenvolvido como trabalho acadêmico para a Unidade Curricular de Arquitetura de Sistemas do SENAI / CentroWEG, sob orientação do Prof. Lucas Santos da Silva. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.*
