@@ -353,4 +353,58 @@ system-architecture-challenge/
 
 ---
 
-*Este projeto foi desenvolvido como trabalho acadêmico para a Unidade Curricular de Arquitetura de Sistemas do SENAI / CentroWEG, sob orientação do Prof. Lucas Santos da Silva. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.*
+<div>
+
+<h2>🤝 Autores e Contato</h2>
+
+<p>Este projeto foi desenvolvido com muita dedicação, foco em Clean Code, visão de arquitetura e excelência técnica, verdadeiramente nos fez sair da zona de conforto e buscar soluções a problemas reais com foco em tudo que fora ensinado na UC de **Arquitetura de Sistemas**, unindo forças na modelagem do domínio e na construção da infraestrutura customizada:</p>
+
+<br>
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <strong>👨‍💻 Pablo Ruan Tzeliks</strong><br>
+      <em>Foco: Domínio Rico (DDD), Infraestrutura, Persistência Customizada (JDBC), Padrão Execute Around e Testes.</em><br><br>
+      <a href="https://www.linkedin.com/in/pablo-ruan-tzeliks/">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Pablo">
+      </a>
+      <a href="https://github.com/PabloTzeliks">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Pablo">
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <strong>👨‍💻 Bruno Luís Medeiros</strong><br>
+      <em>Foco: Casos de Uso da Aplicação, Aplicação dos Repositories e Event Sourcing.</em><br><br>
+      <a href="https://www.linkedin.com/in/bruno-luís-medeiros-9b10862b6/">
+        <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Bruno">
+      </a>
+      <a href="https://github.com/BlMedeiros">
+        <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Bruno">
+      </a>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+</div>
+
+---
+
+<h3>🎓 Agradecimentos e Orientação</h3>
+
+<p>Um agradecimento especial ao nosso Professor e Mentor Técnico, que nos desafiou a sair da zona de conforto, durante toda a Unidade Curricular de Arquitetura de Sistemas</strong> no CentroWEG:</p>
+
+<div align="center">
+    <strong>Prof. Lucas Santos da Silva</strong><br>
+    <a href="https://www.linkedin.com/in/engineer-lucas-ss/"><br>
+      <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Prof Lucas">
+    </a>
+</div>
+
+---
+
+<blockquote>
+  <em>Este projeto foi desenvolvido como trabalho acadêmico para a Unidade Curricular de Arquitetura de Sistemas do SENAI / CentroWEG, sob orientação do Prof. Lucas Santos da Silva. Todo o código foi escrito pelos autores com o objetivo de demonstrar, na prática, o impacto das escolhas arquiteturais na qualidade, manutenibilidade e corretude de um sistema de software.</em>
+</blockquote>
